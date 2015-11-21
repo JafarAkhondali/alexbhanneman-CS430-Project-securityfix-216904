@@ -4,102 +4,13 @@
     <title>Asteroid 430</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
-    <style>
-        body {
-            color: #61443e;
-            font-family:Monospace;
-            font-size:13px;
-            text-align:center;
-
-            background-color: #aaccff;
-            margin: 0px;
-            overflow: hidden;
-        }
-        a {
-
-            color: yellow;
-        }
-        #oldie {
-            background:rgb(0,0,50) !important;
-            color:#fff !important;
-        }
-        button{
-            background-color: white;
-            color: black;
-            font-size: 30px;
-            margin-top: 40px;
-            width: 200px;
-            height: 60px;
-        }
-        button:hover{
-            background-color: red;
-        }
-        #score{
-            color: #ffffff;
-            position: fixed;
-            top: 0px;
-            right: 0px;
-            width: 100%;
-            padding: 5px;
-            font-size: 30px;
-        }
-        #displayScore{
-            background-color: #545055;
-            border: 4px black;
-            color: white;
-            position: fixed;
-            top: 150px;
-            right: 400px;
-            width: 400px;
-            height: 150px;
-            padding: 100px 50px 50px 50px;
-            font-size: 32px;
-            visibility: hidden;
-            opacity: 0.7;
-        }
-        #cubes{
-            color: #ffffff;
-            position: fixed;
-            top: 0px;
-            right: 20px;
-            width: 100%;
-            padding: 20px;
-            font-size: 20px;
-        }
-        #level{
-            color: white;
-            font-size: 128px;
-            position: fixed;
-            top: 150px;
-            right: 400px;
-            opacity: 0.6;
-            font-family: "Arial Black", Gadget, sans-serif;
-        }
-        #caption{
-            color: white;
-            font-size: 32px;
-            position: fixed;
-            top: 300px;
-            right: 480px;
-            opacity: 0.8;
-            font-family: "Arial Black", Gadget, sans-serif;
-        }
-        #powerUp{
-            color: yellow;
-            position: fixed;
-            top: 0;
-            right: 10px;
-            opacity: 0.6;
-            font-family: "Arial Black", Gadget, sans-serif;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="project.css">
 </head>
 <body>
 
 <div id="container"></div>
 <div id="score"></div>
-<div id="cubes"></div>
+<div id="asteroids"></div>
 <div id="displayScore"><span id="text"></span><button id="btn" type="submit" onclick="restart()">Restart</button></div>
 <div id="level"></div>
 <div id="caption"></div>
@@ -107,12 +18,15 @@
 
 <script type="text/javascript" src="../js/three.js-master/build/three.min.js"></script>
 <script type="text/javascript" src="../js/three.js-master/examples/js/Detector.js"></script>
-<script type="text/javascript" src="core/Controls.js"></script>
 <script type="text/javascript" src="../js/three.js-master/examples/js/libs/stats.min.js"></script>
 <script type="text/javascript" src="../js/three.js-master/examples/js/loaders/OBJLoader.js"></script>
+<script type="text/javascript" src="../js/microcache.js"></script>
+
+<script type="text/javascript" src="core/Universe.js"></script>
+<script type="text/javascript" src="core/Controls.js"></script>
+<script type="text/javascript" src="core/CollisionDetect.js"></script>
 <script type="text/javascript" src="core/Main.js"></script>
 <script type="text/javascript" src="core/Colors.js"></script>
-<script type="text/javascript" src="core/CollisionDetect.js"></script>
 <script type="text/javascript" src="core/PowerUps"></script>
 <script type="text/javascript" src="core/Lasers.js"></script>
 <script type="text/javascript" src="core/Asteroids.js"></script>

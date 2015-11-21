@@ -7,6 +7,8 @@ var moveAsteroidList= [];
 var asteroidWidth = 1.5;
 var asteroidObj = ['obj/asteroid3.json', 'obj/asteroid4.json','obj/asteroid5.json','obj/asteroid6.json'];
 
+
+
 //asteroid object functions
 function generateAsteroid(dist, freq, numTimes){
 
@@ -15,11 +17,10 @@ function generateAsteroid(dist, freq, numTimes){
             increment++;
             var loader = new THREE.JSONLoader();
             loader.load( asteroidObj[Math.floor(Math.random()*4)], function ( geometry, material ) {
-                material[0] = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture( 'texture/yellowLava.jpg' ) } );
                 material[0] = new THREE.MeshLambertMaterial( {color: 0x4d0000} );
                 var faceMaterial = new THREE.MeshFaceMaterial( material );
                 var ast = new THREE.Mesh( geometry, faceMaterial );
-                ast.scale.multiplyScalar(1.2);
+                ast.scale.multiplyScalar(asteroidWidth/4);
                 ast.matrixAutoUpdate = true;
                 ast.updateMatrix();
                 placeAsteroid(ast, dist, numTimes);
@@ -41,29 +42,6 @@ function generateAsteroid(dist, freq, numTimes){
             } );
         }
     }
-
-    //planets
-
-    //var segments = 16;
-    //if(mesh.position.x > 2000){
-    //    if(camera.position.x / freq > increment){
-    //        increment++;
-    //        var boxgeometry =  new THREE.SphereGeometry( asteroidWidth, segments, segments );
-    //        var mat = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture( 'texture/yellowLava.jpg' ) } );
-    //        var box = new THREE.Mesh( boxgeometry, mat);
-    //        placeAsteroid(box, dist, numTimes);
-    //    }
-    //}
-    //else if(mesh.position.x < 2000){
-    //    if(camera.position.x / freq > increment){
-    //        increment++;
-    //        var boxgeometry2 = new THREE.SphereGeometry( asteroidWidth, segments, segments );
-    //        var mat2 = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture( 'texture/meteor.gif' ) } );
-    //        var box2 = new THREE.Mesh( boxgeometry2, mat2);
-    //        placeAsteroid(box2, dist, numTimes);
-    //    }
-    //}
-
 }
 function placeAsteroid(asteroid, dist, numTimes){
 

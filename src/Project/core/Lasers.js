@@ -9,7 +9,6 @@ function generateLasers(){
     for(var i = 0; i < time.length; i++){
         if(mesh.position.x > time[i] && mesh.position.x < time[i]+1){
             var material = new THREE.MeshPhongMaterial({
-                ambient: 0xffffff,
                 color: 0x0000ff,
                 specular: 0xffffff,
                 shininess: 400

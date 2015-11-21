@@ -12,41 +12,41 @@ function generatePowerUp(){
     var quick = [10, 900, 1500, 2000];
     var shrink = [600, 1200, 1900, 2500, 2700];
 
-    for(var i = 0; i < quick.length; i++){
-        if(mesh.position.x > quick[i] && mesh.position.x < quick[i]+1){
-            var material = new THREE.MeshPhongMaterial({
-                ambient: 0xffffff,
-                color: 0x0000ff,
-                specular: 0xffffff,
-                shininess: 400
-            });
-            var ringGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
-            ringGeometry.rotateY(Math.PI/2);
-            var ring = new THREE.Mesh( ringGeometry, material );
+    if(mesh != null){
+        for(var i = 0; i < quick.length; i++){
+            if(mesh.position.x > quick[i] && mesh.position.x < quick[i]+1){
+                var material = new THREE.MeshPhongMaterial({
+                    color: 0x0000ff,
+                    specular: 0xffffff,
+                    shininess: 400
+                });
+                var ringGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+                ringGeometry.rotateY(Math.PI/2);
+                var ring = new THREE.Mesh( ringGeometry, material );
 
-            placePowerUp(ring, 80);
-            powerUpType = "quick";
+                placePowerUp(ring, 80);
+                powerUpType = "quick";
+            }
         }
-    }
-    for(var j = 0; j < shrink.length; j++){
-        if(mesh.position.x > shrink[j] && mesh.position.x < shrink[j]+1){
-            var newMaterial = new THREE.MeshPhongMaterial({
-                ambient: 0xffffff,
-                color: 0x00ff00,
-                specular: 0xffffff,
-                shininess: 400
-            });
-            var newRingGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
-            newRingGeometry.rotateY(Math.PI/2);
-            var newRing = new THREE.Mesh( newRingGeometry, newMaterial );
+        for(var j = 0; j < shrink.length; j++){
+            if(mesh.position.x > shrink[j] && mesh.position.x < shrink[j]+1){
+                var newMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ff00,
+                    specular: 0xffffff,
+                    shininess: 400
+                });
+                var newRingGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+                newRingGeometry.rotateY(Math.PI/2);
+                var newRing = new THREE.Mesh( newRingGeometry, newMaterial );
 
-            placePowerUp(newRing, 80);
-            powerUpType = "shrink";
+                placePowerUp(newRing, 80);
+                powerUpType = "shrink";
+            }
         }
     }
 }
 function placePowerUp(powerUp, dist){
-    var x = camera.position.x + dist;
+    var x = camera.position.x + (dist+(mesh.position.x/10));
     var y = mesh.position.y + Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
     var z = mesh.position.z + Math.floor((Math.random() * maxHeight * 3) + -maxHeight);
     powerUp.position.set(x, y, z);

@@ -226,7 +226,10 @@ function explodeAsteroid(){
     if(!asteroidExploded) {
         for (var i = 0; i < 30; i++) {
             var box = new THREE.BoxGeometry(((i%3)+1)*asteroidWidth/10,((i%3)+1)*asteroidWidth/10,((i%3)+1)*asteroidWidth/10);
-            var mat = new THREE.MeshPhongMaterial( { map: THREE.ImageUtils.loadTexture( 'texture/exploded.jpg' ) } );
+            var loader = new THREE.TextureLoader();
+            var texture = loader.load('texture/exploded.jpg');
+            texture.minFilter = THREE.LinearFilter;
+            var mat = new THREE.MeshPhongMaterial( { map: texture, overdraw: true } );
             var asteroid = new THREE.Mesh(box, mat);
 
             asteroid.position.set(mesh.position.x +.2, mesh.position.y +.3, mesh.position.z);

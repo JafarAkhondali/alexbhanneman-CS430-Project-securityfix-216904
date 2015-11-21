@@ -12,6 +12,13 @@ var increment = 0;
 var value = 0;
 var engineFire = [], engineFire2 = [], engineFire3 = [], engineFire4 = [];
 
+var lvlTime2 = 200;
+var lvlTime3 = 500;
+var lvlTime4 = 900;
+var lvlTime5 = 1250;
+var lvlTime6 = 1600;
+var lvlTime7 = 2000;
+
 //level management
 function level(level){
     var dist, freq, numTimes, shipSpeed = .3;
@@ -25,7 +32,7 @@ function level(level){
     else if (level == 2){
         dist = 30;
         freq = 1;
-        numTimes = 3;
+        numTimes = 2;
         camera.position.x += .4;
         shipSpeed = .6;
         changeAsteroidWidth(2.5);
@@ -33,15 +40,15 @@ function level(level){
     else if (level == 3){
         dist = 40;
         freq = 1;
-        numTimes = 4;
+        numTimes = 2;
         camera.position.x += .6;
         shipSpeed = .8;
-        changeAsteroidWidth(3.2);
+        changeAsteroidWidth(3.0);
     }
     else if (level == 4){
         dist = 45;
         freq = 1;
-        numTimes = 4;
+        numTimes = 3;
         camera.position.x += .75;
         shipSpeed = 1;
         changeAsteroidWidth(4);
@@ -49,7 +56,7 @@ function level(level){
     else if (level == 5){
         dist = 50;
         freq = 1;
-        numTimes = 8;
+        numTimes = 4;
         camera.position.x += .9;
         shipSpeed = 1.2;
         changeAsteroidWidth(4.2);
@@ -60,7 +67,7 @@ function level(level){
         numTimes = 4;
         camera.position.x += 1.1;
         shipSpeed = 1.3;
-        changeAsteroidWidth(3.6);
+        changeAsteroidWidth(3.7);
         moveAsteroid(2,0,1);
     }
     else if (level == 7){
@@ -90,15 +97,10 @@ function level(level){
     }
 }
 function checkLevel(){
-    var time = Math.round(mesh.position.x);
+    var time = 0;
+    if(mesh != null)
+        time = Math.round(mesh.position.x);
     var level = 1;
-
-    var lvlTime2 = 200;
-    var lvlTime3 = 500;
-    var lvlTime4 = 900;
-    var lvlTime5 = 1250;
-    var lvlTime6 = 1600;
-    var lvlTime7 = 2000;
 
     if (time < 40)
         document.getElementById("level").innerHTML = "Level 1";
@@ -122,21 +124,23 @@ function checkLevel(){
     }
 
 
-    if (collision)
-        level = -1;
-    else if (time > lvlTime7)
-        level = 7;
-    else if (time > lvlTime6)
-        level = 6;
-    else if (time > lvlTime5)
-        level = 5;
-    else if (time > lvlTime4)
-        level = 4;
-    else if (time > lvlTime3)
-        level = 3;
-    else if (time > lvlTime2)
-        level = 2;
-
+    if(collision != null){
+        if (collision)
+            level = -1;
+        else if (time > lvlTime7)
+            level = 7;
+        else if (time > lvlTime6)
+            level = 6;
+        else if (time > lvlTime5)
+            level = 5;
+        else if (time > lvlTime4)
+            level = 4;
+        else if (time > lvlTime3)
+            level = 3;
+        else if (time > lvlTime2)
+            level = 2;
+    }
+    
     return level;
 }
 
@@ -395,6 +399,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({antialias:true});
     renderer.setSize(width, height);
     document.body.appendChild(renderer.domElement);
+    renderer._microCache = new MicroCache();
 
     // Create a camera, zoom it out from the model a bit, and add it to the scene.
     camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20000);
@@ -426,6 +431,7 @@ function init() {
     dirLight.shadowMapWidth = 2048;
     dirLight.shadowMapHeight = 2048;
 
+    createUniverse();
 
     // **************SHIP LOADED HERE*************************
     var loader = new THREE.JSONLoader();
@@ -444,7 +450,6 @@ function init() {
 
         //body
         materials[bodyMain] = new THREE.MeshPhongMaterial({ //body
-            ambient: 0x050505,
             color: gray,
             specular: 0x555555,
             shininess: 30
@@ -452,7 +457,6 @@ function init() {
 
         //windshield
         materials[windshield] = new THREE.MeshPhongMaterial({
-            ambient: 0xffffff,
             color: blue,
             specular: 0x555555,
             shininess: 60
@@ -460,7 +464,6 @@ function init() {
 
         //engine
         materials[engine] = new THREE.MeshPhongMaterial({
-            ambient: 0x000000,
             color: black,
             specular: 0x000000,
             shininess: 30
@@ -468,13 +471,13 @@ function init() {
 
         //red decal
         for(var i = decMin; i < decMax+1; i++){
-            materials[i] = new THREE.MeshPhongMaterial( { ambient: 0x050505,
+            materials[i] = new THREE.MeshPhongMaterial( {
                 color: red,
                 specular: 0xff0000,
                 shininess: 30 } );
         }
         for(var i = dec2Min; i < dec2Max+1; i++){
-            materials[i] = new THREE.MeshPhongMaterial( { ambient: 0x050505,
+            materials[i] = new THREE.MeshPhongMaterial( {
                 color: red,
                 specular: 0xff0000,
                 shininess: 30 } );
@@ -482,7 +485,6 @@ function init() {
 
         //back fin
         materials[finRing] = new THREE.MeshPhongMaterial({
-            ambient: 0x000000,
             color: gray,
             specular: 0x555555,
             shininess: 30
@@ -490,7 +492,6 @@ function init() {
 
         //engine stream
         materials[engStream] = new THREE.MeshPhongMaterial({
-            ambient: 0xffffff,
             color: orange,
             specular: 0x555555,
             shininess: 30,
@@ -499,13 +500,11 @@ function init() {
 
         //wing stream
         materials[wingSt] = new THREE.MeshPhongMaterial({
-            ambient: 0x000000,
             color: blue,
             specular: 0x555555,
             shininess: 30
         });
         materials[wingSt2] = new THREE.MeshPhongMaterial({
-            ambient: 0x000000,
             color: blue,
             specular: 0x555555,
             shininess: 30
@@ -559,7 +558,7 @@ function animate() {
 
     if(checkLevel() != -1) {
         document.getElementById("score").innerHTML = Math.round(mesh.position.x).toString();
-        //document.getElementById("asteroids").innerHTML = meshCollisionList.length.toString();
+        document.getElementById("asteroids").innerHTML = meshCollisionList.length.toString();
     }
 
     //this handles moving the object and camera together

@@ -1,29 +1,6 @@
-<ol>
-    <li><a href="src/Stage1/index.html">Stage 1</a></li>
-    <br/>
-    <li><a href="src/Stage2/index.html">Stage 2</a></li>
-    <br/>
-    <li><a href="src/Stage3/index.html">Stage 3</a></li>
-    <br/>
-    <li><a href="src/Project/index.html">Current</a></li>
-    <br/>
-</ol>
-<br/>
-<h1>To Do:</h1>
-<ul>
-    <li><span>Make cubes move in consistent direction</span></li>
-    <br/>
-    <li><span>Make cubes move in consistent direction</span></li>
-    <br/>
-    <li><span>Make universe</span></li>
-    <br/>
-    <li><span>Add start screen similar to end of game screen</span></li>
-    <br/>
-    <li><span>Highscore screen, store highscores with json file</span></li>
-    <br/>
-    <li><span>Lasers and shooting</span></li>
-    <br/>
-    <li><span>Enemies</span></li>
-    <br/>
-</ul>
+# [Asteroid 430](https://github.com/alexbhanneman/CS430-Project)
 
+[![Build Status](https://travis-ci.org/h5bp/html5-boilerplate.svg)](https://travis-ci.org/h5bp/html5-boilerplate)
+[![devDependency Status](https://david-dm.org/h5bp/html5-boilerplate/dev-status.svg)](https://david-dm.org/h5bp/html5-boilerplate#info=devDependencies)
+
+@AlexBHanneman (alexbhanneman.com)
