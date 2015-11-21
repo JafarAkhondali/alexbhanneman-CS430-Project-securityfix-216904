@@ -1,0 +1,1380 @@
+<html>
+
+<head>
+    <title>three.js webgl - geometry - dynamic</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <style>
+        body {
+            color: #61443e;
+            font-family:Monospace;
+            font-size:13px;
+            text-align:center;
+
+            background-color: #aaccff;
+            margin: 0px;
+            overflow: hidden;
+        }
+        a {
+
+            color: yellow;
+        }
+        #oldie {
+            background:rgb(0,0,50) !important;
+            color:#fff !important;
+        }
+        button{
+            background-color: white;
+            color: black;
+            font-size: 30px;
+            margin-top: 40px;
+            width: 200px;
+            height: 60px;
+        }
+        button:hover{
+            background-color: red;
+        }
+        #score{
+            color: #ffffff;
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            width: 100%;
+            padding: 5px;
+            font-size: 30px;
+        }
+        #displayScore{
+            background-color: #545055;
+            border: 4px black;
+            color: white;
+            position: fixed;
+            top: 150px;
+            right: 400px;
+            width: 400px;
+            height: 150px;
+            padding: 100px 50px 50px 50px;
+            font-size: 32px;
+            visibility: hidden;
+            opacity: 0.7;
+        }
+        #cubes{
+            color: #ffffff;
+            position: fixed;
+            top: 0px;
+            right: 20px;
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        #level{
+            color: white;
+            font-size: 128px;
+            position: fixed;
+            top: 150px;
+            right: 400px;
+            opacity: 0.6;
+            font-family: "Arial Black", Gadget, sans-serif;
+        }
+        #caption{
+            color: white;
+            font-size: 32px;
+            position: fixed;
+            top: 300px;
+            right: 480px;
+            opacity: 0.8;
+            font-family: "Arial Black", Gadget, sans-serif;
+        }
+        #powerUp{
+            color: yellow;
+            position: fixed;
+            top: 0;
+            right: 10px;
+            opacity: 0.6;
+            font-family: "Arial Black", Gadget, sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container"></div>
+<div id="score"></div>
+<div id="cubes"></div>
+<div id="displayScore"><span id="text"></span><button id="btn" type="submit" onclick="restart()">Restart</button></div>
+<div id="level"></div>
+<div id="caption"></div>
+<div id="powerUp"></div>
+
+<script type="text/javascript" src="../js/three.js-master/build/three.min.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/Detector.js"></script>
+<script type="text/javascript" src="../js/three.js-master/StandardControls.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/loaders/OBJLoader.js"></script>
+<script>
+
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+    var scene, camera, renderer, controls, stats;
+    var mesh, cubeMesh;
+    var clock = new THREE.Clock();
+    var cubeWidth = 1.5;
+    var maxWidth = 12;
+    var maxHeight = 10;
+    var increment = 0;
+    var value = 0;
+    var collision = false, exploded = false, cubeExploded = false;
+    var explodeEffect = 0, meshExplode = 0;
+    var meshCollisionList= [];
+    var moveCubeList= [];
+    var powerUpList = [];
+    var powerUpType, powerUpDisplay;
+    var powerUpTimer = new THREE.Clock();
+    var gotPowerUp = false;
+    var boxList = [], boxList2 = [], boxList3 = [], boxList4 = [];
+    var engineFire = [], engineFire2 = [], engineFire3 = [], engineFire4 = [];
+    var cubeList = [], cubeList2 = [], cubeList3 = [];
+    var change = true, change2 = true, change3 = true, change4 = true, change5 = true, change6 = true, change7 = true, change8 = true;
+
+    var red = 0xff0000;
+    var gray = 0xd9d9d9;
+    var blue = 0x00ffff;
+    var black = 0x000000;
+    var orange = 0xff4500;
+    var yellow = 0xffcc00;
+
+    //asteroid object functions
+    function generateCube(dist, freq, numTimes){
+
+        if(camera.position.x / freq > increment){
+            increment++;
+            var boxgeometry = new THREE.BoxGeometry(cubeWidth,cubeWidth,cubeWidth);
+
+            //wrap meteor texture on here
+
+            var mat = new THREE.MeshLambertMaterial( {color: 0xa0522d} );
+            var box = new THREE.Mesh( boxgeometry, mat);
+            placeCube(box, dist, numTimes);
+        }
+    }
+    function placeCube(cube, dist, numTimes){
+
+        for(var i = 0; i < numTimes; i++){
+            var x = camera.position.x + dist;
+//            var y = Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
+//            var z = Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
+            var y = mesh.position.y + Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
+            var z = mesh.position.z + Math.floor((Math.random() * maxHeight * 3) + -maxHeight);
+
+
+
+//            if(y > maxHeight*1.1){
+//                y -= (y/Math.floor((Math.random() * maxWidth)));
+//            }
+//            else if (y < -maxHeight*1.1) {
+//                y += (y/Math.floor((Math.random() * maxWidth)));
+//            }
+//            if(z > maxWidth*1.1){
+//                z -= (z/Math.floor((Math.random() * maxWidth)));
+//            }
+//            else if(z < -maxWidth*1.1) {
+//                z += (z/Math.floor((Math.random() * maxWidth)));
+//            }
+
+            cube.position.set(x, y, z);
+            scene.add( cube );
+            meshCollisionList.push(cube);
+            moveCubeList.push(cube);
+        }
+    }
+    function getCube(position){
+        var cube = null;
+        var distFound = 3;
+
+        for(var i = 0; i < meshCollisionList.length; i++){
+            if (Math.abs(position.x - meshCollisionList[i].position.x) < 3 &&
+                Math.abs(position.y - meshCollisionList[i].position.y) < 3 &&
+                Math.abs(position.z - meshCollisionList[i].position.z) < 3 ) {
+
+                if (position.x - meshCollisionList[i].position.x < distFound) {
+                    distFound = position.x - meshCollisionList[i].position.x;
+                    cube = meshCollisionList[i];
+                }
+            }
+        }
+
+        return cube;
+    }
+    function moveCube(speed, directionY, directionZ){
+
+        var mult = 4000;
+        for(var j = 0; j < moveCubeList.length; j++){
+            moveCubeList[j].position.y += directionY*(j % (100*speed))/mult;
+            moveCubeList[j].position.z += directionZ*(j% (100*speed))/mult;
+        }
+    }
+
+    //collision detection and explosion event
+    function generateColor(){
+
+        var array = [orange,
+            yellow,
+            black,
+            red];
+        return array[Math.floor((Math.random() * array.length))];
+    }
+    function explode(){
+
+        if(!exploded) {
+            for (var i = 0; i < 80; i++) {
+                var box = new THREE.BoxGeometry(.1, .1, .1);
+                var mat = new THREE.MeshLambertMaterial( {color: generateColor()} );
+                var cube = new THREE.Mesh(box, mat);
+
+                cube.position.set(mesh.position.x +.2, mesh.position.y +.3, mesh.position.z +.1);
+                scene.add(cube);
+                cube.updateMatrix();
+                cube.matrixAutoUpdate = true;
+                boxList.push(cube);
+            }
+
+            exploded = true;
+            scene.remove(mesh);
+
+            for(var p = 0; p < boxList.length; p++){
+                boxList2[p] = boxList[p].clone();
+                boxList3[p] = boxList[p].clone();
+                boxList4[p] = boxList[p].clone();
+                scene.add(boxList2[p]);
+                scene.add(boxList3[p]);
+                scene.add(boxList4[p]);
+            }
+        }
+
+        explodeCube();
+
+        var exp;
+        var mult = 1000, speed = .001;
+        for(var j = 0; j < boxList.length; j++){
+            exp = Math.floor((Math.random() * 6) + -6);
+            boxList[j].position.x -= speed;
+
+            if (change && change2){
+                if (change2){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y -= (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = false;
+            }
+            else if (!change && !change2){
+                if (change2){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else if (change && !change2){
+                if (change2){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else{
+                if (change2){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+        }
+        for(var j = 0; j < boxList2.length; j++){
+            exp = Math.floor((Math.random() * 5) + -5);
+            boxList2[j].position.x -= speed;
+
+            if (change && change2){
+                if (change2){
+                    boxList2[j].position.y += (j % exp)/mult;
+                    boxList2[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList2[j].position.y -= (j % exp)/mult;
+                    boxList2[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = false;
+            }
+            else if (!change && !change2){
+                if (change2){
+                    boxList2[j].position.y += (j % exp)/mult;
+                    boxList2[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList2[j].position.y += (j % exp)/mult;
+                    boxList2[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else if (change && !change2){
+                if (change2){
+                    boxList2[j].position.y += (j % exp)/mult;
+                    boxList2[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else{
+                if (change2){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+        }
+        for(var j = 0; j < boxList3.length; j++){
+            exp = Math.floor((Math.random() * 3) + -3);
+            boxList3[j].position.x -= speed;
+
+            if (change && change2){
+                if (change2){
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList3[j].position.y -= (j % exp)/mult;
+                    boxList3[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = false;
+            }
+            else if (!change && !change2){
+                if (change2){
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else if (change && !change2){
+                if (change2){
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z += ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+            else{
+                if (change2){
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z += ((j+1)% exp)/mult;
+                    change2 = false;
+                }
+                else{
+                    boxList3[j].position.y += (j % exp)/mult;
+                    boxList3[j].position.z -= ((j+1)% exp)/mult;
+                    change2 = true;
+                }
+                change = true;
+            }
+        }
+    }
+    function explodeCube(){
+
+        if(!cubeExploded) {
+            for (var i = 0; i < 30; i++) {
+                var box = new THREE.BoxGeometry(cubeWidth/10,cubeWidth/10,cubeWidth/10);
+                var mat = new THREE.MeshLambertMaterial( {color: 0x663300} );
+                var cube = new THREE.Mesh(box, mat);
+
+                cube.position.set(mesh.position.x +.2, mesh.position.y +.3, mesh.position.z);
+                cube.updateMatrix();
+                cube.matrixAutoUpdate = true;
+                scene.add(cube);
+                cubeList.push(cube);
+            }
+            for(var p = 0; p < cubeList.length; p++){
+                cubeList2[p] = cubeList[p].clone();
+                cubeList3[p] = cubeList[p].clone();
+                scene.add(cubeList2[p]);
+                scene.add(cubeList3[p]);
+            }
+            explodeEffect = 5;
+            cubeExploded = true;
+            controls.turnOff();
+        }
+
+        var exp, speed = .005;
+        var mult = 500;
+        for(var j = 0; j < cubeList.length; j++){
+            exp = Math.floor((Math.random() * 5) + -5);
+            cubeList[j].position.x += speed;
+
+            if (change4 && change4){
+                if (change4){
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList[j].position.y -= (j % exp)/mult;
+                    cubeList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = false;
+            }
+            else if (!change3 && !change4){
+                if (change4){
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else if (change3 && !change4){
+                if (change4){
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else{
+                if (change4){
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList[j].position.y += (j % exp)/mult;
+                    cubeList[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+        }
+        for(var j = 0; j < cubeList2.length; j++){
+            exp = Math.floor((Math.random() * 3) + -3);
+            cubeList2[j].position.x += speed;
+
+            if (change3 && change4){
+                if (change4){
+                    cubeList2[j].position.y += (j % exp)/mult;
+                    cubeList2[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList2[j].position.y -= (j % exp)/mult;
+                    cubeList2[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = false;
+            }
+            else if (!change3 && !change4){
+                if (change4){
+                    cubeList2[j].position.y += (j % exp)/mult;
+                    cubeList2[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList2[j].position.y += (j % exp)/mult;
+                    cubeList2[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else if (change3 && !change4){
+                if (change4){
+                    boxList2[j].position.y += (j % exp)/mult;
+                    boxList2[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else{
+                if (change4){
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z += ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    boxList[j].position.y += (j % exp)/mult;
+                    boxList[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+        }
+        for(var j = 0; j < cubeList3.length; j++){
+            exp = Math.floor((Math.random() * 2) + -2);
+            cubeList3[j].position.x += speed;
+
+            if (change3 && change4){
+                if (change4){
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList3[j].position.y -= (j % exp)/mult;
+                    cubeList3[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = false;
+            }
+            else if (!change3 && !change4){
+                if (change4){
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else if (change3 && !change4){
+                if (change4){
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z += ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+            else{
+                if (change4){
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z += ((j+1)% exp)/mult;
+                    change4 = false;
+                }
+                else{
+                    cubeList3[j].position.y += (j % exp)/mult;
+                    cubeList3[j].position.z -= ((j+1)% exp)/mult;
+                    change4 = true;
+                }
+                change3 = true;
+            }
+        }
+    }
+    function detectCollision(){
+
+        if (!collision){
+            var originPoint = mesh.position.clone();
+
+            for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++)
+            {
+                var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+                var globalVertex = localVertex.applyMatrix4( mesh.matrix );
+                var directionVector = globalVertex.sub( mesh.position );
+
+                var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+                var collisionResults = ray.intersectObjects( meshCollisionList );
+
+                var rayPow = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+                var collisionResultsPow = rayPow.intersectObjects( powerUpList );
+
+                if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+
+                    cubeMesh = getCube(mesh.position);
+
+                    collision = true;
+                    explode();
+                    scene.remove(cubeMesh);
+                    document.getElementById("text").innerHTML = "Your score: " + Math.round(mesh.position.x).toString();
+                    document.getElementById("score").style.visibility = "hidden";
+                    document.getElementById("level").style.visibility = "hidden";
+                    document.getElementById("displayScore").style.visibility = "visible";
+                }
+
+                else if(collisionResultsPow.length > 0 && collisionResultsPow[0].distance < directionVector.length()) {
+                    var powerUp = getPowerUp(mesh.position);
+                    scene.remove(powerUp);
+                    enablePowerUp();
+                }
+            }
+
+            //delete cubes if they're behind ship
+            for (var i = 0; i < meshCollisionList.length; i++){
+                if(meshCollisionList[i].position.x < mesh.position.x-5) {
+                    scene.remove(meshCollisionList[i]);
+                    meshCollisionList.splice(i, 1);
+                }
+            }
+            for (var i = 0; i < moveCubeList.length; i++){
+                if(moveCubeList[i].position.x < mesh.position.x-5) {
+                    moveCubeList.splice(i, 1);
+                }
+            }
+        }
+        else {
+            explode();
+        }
+
+    }
+
+    //power ups
+    function generatePowerUp(){
+
+        var quick = [10, 900, 1500, 2000];
+        var shrink = [600, 1200, 1900, 2500, 2700];
+
+        for(var i = 0; i < quick.length; i++){
+            if(mesh.position.x > quick[i] && mesh.position.x < quick[i]+1){
+                var material = new THREE.MeshPhongMaterial({
+                    ambient: 0xffffff,
+                    color: 0x0000ff,
+                    specular: 0xffffff,
+                    shininess: 400
+                });
+                var ringGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+                ringGeometry.rotateY(Math.PI/2);
+                var ring = new THREE.Mesh( ringGeometry, material );
+
+                placePowerUp(ring, 80);
+                powerUpType = "quick";
+            }
+        }
+        for(var j = 0; j < shrink.length; j++){
+            if(mesh.position.x > shrink[j] && mesh.position.x < shrink[j]+1){
+                var newMaterial = new THREE.MeshPhongMaterial({
+                    ambient: 0xffffff,
+                    color: 0x00ff00,
+                    specular: 0xffffff,
+                    shininess: 400
+                });
+                var newRingGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+                newRingGeometry.rotateY(Math.PI/2);
+                var newRing = new THREE.Mesh( newRingGeometry, newMaterial );
+
+                placePowerUp(newRing, 80);
+                powerUpType = "shrink";
+            }
+        }
+    }
+    function placePowerUp(powerUp, dist){
+        var x = camera.position.x + dist;
+        var y = mesh.position.y + Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
+        var z = mesh.position.z + Math.floor((Math.random() * maxHeight * 3) + -maxHeight);
+        powerUp.position.set(x, y, z);
+        scene.add( powerUp );
+        powerUpList.push(powerUp);
+        powerUpDisplay = powerUp.position.x;
+    }
+    function enablePowerUp(){
+        if(powerUpType == "quick"){
+            controls.updateShipSpeed(2);
+            powerUpTimer.start();
+            gotPowerUp = true;
+        }
+        else if(powerUpType == "shrink"){
+            mesh.scale.set(.05,.05,.05);
+            powerUpTimer.start();
+            gotPowerUp = true;
+        }
+    }
+    function disablePowerUp(){
+        if(powerUpType == "quick"){
+            powerUpType = "";
+            gotPowerUp = false;
+            document.getElementById("powerUp").innerHTML = "";
+        }
+        else if(powerUpType == "shrink"){
+            powerUpType = "";
+            gotPowerUp = false;
+            mesh.scale.multiplyScalar(4);
+            document.getElementById("powerUp").innerHTML = "";
+        }
+    }
+    function checkPowerUp(){
+        if(gotPowerUp){
+            var time = powerUpTimer.getElapsedTime();
+            if(time > 20){
+                disablePowerUp();
+                powerUpTimer = new THREE.Clock();
+            }
+            else if (time < 1){
+                document.getElementById("powerUp").style.fontSize = "128px";
+                document.getElementById("powerUp").style.right = "400px";
+                document.getElementById("powerUp").style.top = "100px";
+            }
+            else{
+                document.getElementById("powerUp").style.fontSize = "32px";
+                document.getElementById("powerUp").style.right = "0";
+                document.getElementById("powerUp").style.top = "0";
+            }
+
+            if(powerUpType == "quick") {
+                document.getElementById("powerUp").innerHTML = "Agility!";
+            }
+            else if (powerUpType == "shrink") {
+                document.getElementById("powerUp").innerHTML = "Tiny!";
+            }
+        }
+    }
+    function getPowerUp(position){
+        var powerUp = null;
+        var distFound = 3;
+
+        for(var i = 0; i < powerUpList.length; i++){
+            if (Math.abs(position.x - powerUpList[i].position.x) < 3 &&
+                Math.abs(position.y - powerUpList[i].position.y) < 3 &&
+                Math.abs(position.z - powerUpList[i].position.z) < 3 ) {
+
+                if (position.x - powerUpList[i].position.x < distFound) {
+                    distFound = position.x - powerUpList[i].position.x;
+                    powerUp = powerUpList[i];
+                }
+            }
+        }
+
+
+        return powerUp;
+    }
+
+    //level management
+    function level(level){
+
+        var dist, freq, numTimes, shipSpeed = .3;
+
+        if (level == 1){
+            dist = 30;      //place distance away from plane
+            freq = 3;       //lower freq appears sooner
+            numTimes = 4;   //how many times to place a cube
+            camera.position.x += .2;
+        }
+        else if (level == 2){
+            dist = 30;
+            freq = 1;
+            numTimes = 3;
+            camera.position.x += .4;
+            shipSpeed = .6;
+            cubeWidth = 2.5;
+        }
+        else if (level == 3){
+            dist = 40;
+            freq = 1;
+            numTimes = 4;
+            camera.position.x += .6;
+            shipSpeed = .8;
+            cubeWidth = 3.2;
+        }
+        else if (level == 4){
+            dist = 45;
+            freq = 1;
+            numTimes = 4;
+            camera.position.x += .75;
+            shipSpeed = 1;
+            cubeWidth = 4;
+        }
+        else if (level == 5){
+            dist = 50;
+            freq = 1;
+            numTimes = 8;
+            camera.position.x += .9;
+            shipSpeed = 1.2;
+            cubeWidth = 4.2;
+        }
+        else if (level == 6){
+            dist = 50;
+            freq = 1;
+            numTimes = 4;
+            camera.position.x += 1.1;
+            shipSpeed = 1.3;
+            cubeWidth = 3.6;
+            moveCube(2,0,1);
+        }
+        else if (level == 7){
+            dist = 50;
+            freq = 1;
+            numTimes = 4;
+            camera.position.x += 1.1;
+            shipSpeed = 1.3;
+            cubeWidth = 4.2;
+            moveCube(3,-1,1);
+        }
+
+
+        //level 7 make asteroids bigger and move
+            //introduce powerups here-> get smaller, move quicker
+        //level 8 make asteroids huge and move
+        //level 9 add lasers with finite amount
+            //can collect more ammo
+        //level 10 introduce bad guys, make asteroids smaller
+        //level 11 introduce more bad guys, asteroids bigger
+        //level 12 introduce boss
+        //level 13 madness
+
+
+        generatePowerUp();
+
+        if(level != -1) {
+            generateCube(dist, freq, numTimes);
+            if(powerUpType == '')
+                controls.updateShipSpeed(shipSpeed);
+        }
+    }
+    function checkLevel(){
+        var time = Math.round(mesh.position.x);
+        var level = 1;
+
+        var lvlTime2 = 200;
+        var lvlTime3 = 500;
+        var lvlTime4 = 900;
+        var lvlTime5 = 1250;
+        var lvlTime6 = 1600;
+        var lvlTime7 = 2000;
+
+        if (time < 40)
+            document.getElementById("level").innerHTML = "Level 1";
+        else if (time < lvlTime2+60 && time > lvlTime2)
+            document.getElementById("level").innerHTML = "Level 2";
+        else if (time < lvlTime3+60 && time > lvlTime3)
+            document.getElementById("level").innerHTML = "Level 3";
+        else if (time < lvlTime4+70 && time > lvlTime4)
+            document.getElementById("level").innerHTML = "Level 4";
+        else if (time < lvlTime5+80 && time > lvlTime5)
+            document.getElementById("level").innerHTML = "Level 5";
+        else if (time < lvlTime6+80 && time > lvlTime6) {
+            document.getElementById("level").innerHTML = "Level 6";
+            document.getElementById("caption").innerHTML = "Asteroids move!";
+        }
+        else if (time < lvlTime7+80 && time > lvlTime7)
+            document.getElementById("level").innerHTML = "Level 7";
+        else {
+            document.getElementById("level").innerHTML = "";
+            document.getElementById("caption").innerHTML = "";
+        }
+
+
+        if (collision)
+            level = -1;
+        else if (time > lvlTime7)
+            level = 7;
+        else if (time > lvlTime6)
+            level = 6;
+        else if (time > lvlTime5)
+            level = 5;
+        else if (time > lvlTime4)
+            level = 4;
+        else if (time > lvlTime3)
+            level = 3;
+        else if (time > lvlTime2)
+            level = 2;
+
+        return level;
+    }
+
+    function rotateMesh(){
+
+        if((controls.leftTilt || controls.rightTilt) && !controls.upTilt && !controls.downTilt){
+            mesh.rotateX(Math.sin(controls.rotate));
+            controls.degRotated += controls.rotate;
+        }
+
+        if((controls.downTilt || controls.upTilt) && !controls.rightTilt && !controls.leftTilt){
+            mesh.rotateZ(Math.sin(controls.rotateVert));
+            controls.degRotatedVert += controls.rotateVert;
+        }
+
+        //move back when key isn't pressed
+        if(!controls.rightTilt && !controls.leftTilt){
+            mesh.rotateX(Math.sin(-controls.degRotated ));
+            controls.rotate = 0;
+            controls.degRotated = 0;
+        }
+
+        //move back when key isn't pressed
+        if(!controls.upTilt && !controls.downTilt){
+            mesh.rotateZ(Math.sin(-controls.degRotatedVert));
+            controls.rotateVert = 0;
+            controls.degRotatedVert = 0;
+        }
+    }
+    function engine(){
+
+        for (var i = 0; i < 5; i++) {
+            var box = new THREE.BoxGeometry(.01, .01, .01);
+            var mat = new THREE.MeshLambertMaterial( {color: generateColor()} );
+            var cube = new THREE.Mesh(box, mat);
+
+            cube.position.set(mesh.position.x -.1, mesh.position.y, mesh.position.z);
+            scene.add(cube);
+            cube.updateMatrix();
+            cube.matrixAutoUpdate = true;
+            engineFire.push(cube);
+        }
+
+        for(var p = 0; p < engineFire.length; p++){
+            engineFire2[p] = engineFire[p].clone();
+            engineFire3[p] = engineFire[p].clone();
+            engineFire4[p] = engineFire[p].clone();
+            scene.add(engineFire2[p]);
+            scene.add(engineFire3[p]);
+            scene.add(engineFire4[p]);
+        }
+
+        var exp;
+        var mult = 1000, speed = .001;
+        for(var j = 0; j < engineFire.length; j++){
+            exp = Math.floor((Math.random() * 6) + -6);
+            engineFire[j].position.x -= speed;
+
+            if (change5&& change6){
+                if (change6){
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y -= (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= false;
+            }
+            else if (!change5&& !change6){
+                if (change6){
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else if (change5&& !change6){
+                if (change6){
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else{
+                if (change6){
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+        }
+        for(var j = 0; j < engineFire2.length; j++){
+            exp = Math.floor((Math.random() * 5) + -5);
+            engineFire2[j].position.x -= speed;
+
+            if (change5&& change6){
+                if (change6){
+                    engineFire2[j].position.y += (j % exp)/mult;
+                    engineFire2[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire2[j].position.y -= (j % exp)/mult;
+                    engineFire2[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= false;
+            }
+            else if (!change5&& !change6){
+                if (change6){
+                    engineFire2[j].position.y += (j % exp)/mult;
+                    engineFire2[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire2[j].position.y += (j % exp)/mult;
+                    engineFire2[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else if (change5&& !change6){
+                if (change6){
+                    engineFire2[j].position.y += (j % exp)/mult;
+                    engineFire2[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else{
+                if (change6){
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z += ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire[j].position.y += (j % exp)/mult;
+                    engineFire[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+        }
+        for(var j = 0; j < engineFire3.length; j++){
+            exp = Math.floor((Math.random() * 3) + -3);
+            engineFire3[j].position.x -= speed;
+
+            if (change5&& change6){
+                if (change6){
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire3[j].position.y -= (j % exp)/mult;
+                    engineFire3[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= false;
+            }
+            else if (!change5&& !change6){
+                if (change6){
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else if (change5&& !change6){
+                if (change6){
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z += ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+            else{
+                if (change6){
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z += ((j+1)% exp)/mult;
+                    change6 = false;
+                }
+                else{
+                    engineFire3[j].position.y += (j % exp)/mult;
+                    engineFire3[j].position.z -= ((j+1)% exp)/mult;
+                    change6 = true;
+                }
+                change5= true;
+            }
+        }
+
+        for(var j = 0; j < engineFire.length; j++){
+            if(engineFire[j].position.x > mesh.position.x + 1)
+                engineFire.splice(j,1);
+            if(engineFire2[j].position.x > mesh.position.x + 1)
+                engineFire2.splice(j,1);
+            if(engineFire3[j].position.x > mesh.position.x + 1)
+                engineFire3.splice(j,1);
+            if(engineFire4[j].position.x > mesh.position.x + 1)
+                engineFire4.splice(j,1);
+        }
+    }
+
+    // Sets up and run the scene.
+    function init() {
+
+        // Create the scene and set the scene size.
+        scene = new THREE.Scene();
+        var width = window.innerWidth,
+            height = window.innerHeight;
+
+        // Create a renderer and add it to the DOM.
+        renderer = new THREE.WebGLRenderer({antialias:true});
+        renderer.setSize(width, height);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a camera, zoom it out from the model a bit, and add it to the scene.
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20000);
+        camera.position.set(-2,.5,0);
+
+        // Create an event listener that resizes the renderer with the browser window.
+        window.addEventListener('resize', function() {
+            var WIDTH = window.innerWidth,
+                HEIGHT = window.innerHeight;
+            renderer.setSize(WIDTH, HEIGHT);
+            camera.aspect = WIDTH / HEIGHT;
+            camera.updateProjectionMatrix();
+        });
+        scene.add(camera);
+
+        // LIGHTS
+        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+        hemiLight.color.setHSL( 0.6, 1, 0.6 );
+        hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+        hemiLight.position.set( 0, 500, -500 );
+        scene.add( hemiLight );
+
+        var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+        dirLight.color.setHSL( 0.1, 1, 0.95 );
+        dirLight.position.set( -1, 1.75, 1 );
+        dirLight.position.multiplyScalar( 50 );
+        scene.add( dirLight );
+        dirLight.castShadow = true;
+        dirLight.shadowMapWidth = 2048;
+        dirLight.shadowMapHeight = 2048;
+
+
+        // **************SHIP LOADED HERE*************************
+        var loader = new THREE.JSONLoader();
+        loader.load( 'LatestShip.json', function ( geometry, materials ) {
+            var engStream = 0;
+            var decMin = 1;
+            var decMax = 6;
+            var finRing = 7;
+            var windshield = 8;
+            var engine = 9;
+            var dec2Min = 10;
+            var dec2Max = 18;
+            var bodyMain = 19;
+            var wingSt = 20;
+            var wingSt2 = 21;
+
+            //body
+            materials[bodyMain] = new THREE.MeshPhongMaterial({ //body
+                ambient: 0x050505,
+                color: gray,
+                specular: 0x555555,
+                shininess: 30
+            });
+
+            //windshield
+            materials[windshield] = new THREE.MeshPhongMaterial({
+                ambient: 0xffffff,
+                color: blue,
+                specular: 0x555555,
+                shininess: 60
+            });
+
+            //engine
+            materials[engine] = new THREE.MeshPhongMaterial({
+                ambient: 0x000000,
+                color: black,
+                specular: 0x000000,
+                shininess: 30
+            });
+
+            //red decal
+            for(var i = decMin; i < decMax+1; i++){
+                materials[i] = new THREE.MeshPhongMaterial( { ambient: 0x050505,
+                    color: red,
+                    specular: 0xff0000,
+                    shininess: 30 } );
+            }
+            for(var i = dec2Min; i < dec2Max+1; i++){
+                materials[i] = new THREE.MeshPhongMaterial( { ambient: 0x050505,
+                    color: red,
+                    specular: 0xff0000,
+                    shininess: 30 } );
+            }
+
+            //back fin
+            materials[finRing] = new THREE.MeshPhongMaterial({
+                ambient: 0x000000,
+                color: gray,
+                specular: 0x555555,
+                shininess: 30
+            });
+
+            //engine stream
+            materials[engStream] = new THREE.MeshPhongMaterial({
+                ambient: 0xffffff,
+                color: orange,
+                specular: 0x555555,
+                shininess: 30,
+                opacity: 0.5
+            });
+
+            //wing stream
+            materials[wingSt] = new THREE.MeshPhongMaterial({
+                ambient: 0x000000,
+                color: blue,
+                specular: 0x555555,
+                shininess: 30
+            });
+            materials[wingSt2] = new THREE.MeshPhongMaterial({
+                ambient: 0x000000,
+                color: blue,
+                specular: 0x555555,
+                shininess: 30
+            });
+
+            var faceMaterial = new THREE.MeshFaceMaterial( materials );
+            mesh = new THREE.Mesh( geometry, faceMaterial );
+
+            mesh.position.set( 0, 0, 0 );
+            mesh.scale.set(.2,.2,.2);
+
+            mesh.matrixAutoUpdate = true;
+            mesh.updateMatrix();
+
+            scene.add( mesh );
+        } );
+        camera.add(mesh);
+
+        // GROUND
+        var groundGeo = new THREE.PlaneBufferGeometry( 250, 2*(maxWidth+2) );
+        var groundMat = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505 } );
+        groundMat.color.setHSL( 0.095, 1, 0.75 );
+        var ground = new THREE.Mesh( groundGeo, groundMat );
+        ground.rotation.x = -Math.PI/2;
+        ground.position.y = -1;
+        scene.add( ground );
+
+        controls = new THREE.StandardControls( camera, document, mesh, .5, maxWidth, maxHeight);
+        controls.movementSpeed = 10;
+        controls.lookSpeed = 0.125;
+        controls.lookVertical = true;
+        controls.constrainVertical = true;
+        controls.verticalMin = 1.1;
+        controls.verticalMax = 2.2;
+
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        stats.domElement.style.zIndex = 100;
+        container.appendChild( stats.domElement );
+    }
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        level(checkLevel());
+        detectCollision();
+
+        rotateMesh();
+        checkPowerUp();
+
+        if(checkLevel() != -1) {
+            document.getElementById("score").innerHTML = Math.round(mesh.position.x).toString();
+            //document.getElementById("cubes").innerHTML = meshCollisionList.length.toString();
+        }
+
+        //this handles moving the object and camera together
+        controls.update(clock.getDelta()); // required if controls.enableDamping = true, or if controls.autoRotate = true
+        mesh.position.set(camera.position.x + 2.2 + explodeEffect, camera.position.y - 1.3, camera.position.z );
+        camera.lookAt(new THREE.Vector3(mesh.position.x + 3 + meshExplode, mesh.position.y, mesh.position.z));
+
+        renderer.render(scene, camera);
+
+
+        window.addEventListener( 'keydown', checkEnter, true );
+    }
+
+    //restart game with enter
+    function checkEnter(e){
+        var key = e.keyCode;
+        if (key == 13 && collision) {
+            var btn = document.getElementById("btn");
+            btn.click();
+            e.preventDefault();
+        }
+    }
+    function restart(){
+        location.reload();
+    }
+
+    init();
+    animate();
+
+</script>
+
+</body>
+
+</html>
