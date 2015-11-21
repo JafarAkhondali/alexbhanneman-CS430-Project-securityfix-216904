@@ -1,0 +1,130 @@
+var powerUpList = [];
+var powerUpType, powerUpDisplay;
+var powerUpTimer = new THREE.Clock();
+var gotPowerUp = false;
+var shrinkMoveX = 0;
+var shrinkMoveY = 0;
+
+
+//power ups
+function generatePowerUp(){
+
+    var quick = [10, 900, 1500, 2000];
+    var shrink = [600, 1200, 1900, 2500, 2700];
+
+    for(var i = 0; i < quick.length; i++){
+        if(mesh.position.x > quick[i] && mesh.position.x < quick[i]+1){
+            var material = new THREE.MeshPhongMaterial({
+                ambient: 0xffffff,
+                color: 0x0000ff,
+                specular: 0xffffff,
+                shininess: 400
+            });
+            var ringGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+            ringGeometry.rotateY(Math.PI/2);
+            var ring = new THREE.Mesh( ringGeometry, material );
+
+            placePowerUp(ring, 80);
+            powerUpType = "quick";
+        }
+    }
+    for(var j = 0; j < shrink.length; j++){
+        if(mesh.position.x > shrink[j] && mesh.position.x < shrink[j]+1){
+            var newMaterial = new THREE.MeshPhongMaterial({
+                ambient: 0xffffff,
+                color: 0x00ff00,
+                specular: 0xffffff,
+                shininess: 400
+            });
+            var newRingGeometry = new THREE.TorusGeometry(.5,.2, 16, 10 );
+            newRingGeometry.rotateY(Math.PI/2);
+            var newRing = new THREE.Mesh( newRingGeometry, newMaterial );
+
+            placePowerUp(newRing, 80);
+            powerUpType = "shrink";
+        }
+    }
+}
+function placePowerUp(powerUp, dist){
+    var x = camera.position.x + dist;
+    var y = mesh.position.y + Math.floor((Math.random() * maxWidth * 3) + -maxWidth);
+    var z = mesh.position.z + Math.floor((Math.random() * maxHeight * 3) + -maxHeight);
+    powerUp.position.set(x, y, z);
+    scene.add( powerUp );
+    powerUpList.push(powerUp);
+    powerUpDisplay = powerUp.position.x;
+}
+function enablePowerUp(){
+    if(powerUpType == "quick"){
+        controls.updateShipSpeed(2);
+        powerUpTimer.start();
+        gotPowerUp = true;
+    }
+    else if(powerUpType == "shrink"){
+        mesh.scale.set(.05,.05,.05);
+        shrinkMoveY = .7;
+        shrinkMoveX = -.7;
+        powerUpTimer.start();
+        gotPowerUp = true;
+    }
+}
+function disablePowerUp(){
+    if(powerUpType == "quick"){
+        powerUpType = "";
+        gotPowerUp = false;
+        document.getElementById("powerUp").innerHTML = "";
+    }
+    else if(powerUpType == "shrink"){
+        powerUpType = "";
+        gotPowerUp = false;
+        shrinkMoveX = 0;
+        shrinkMoveY = 0;
+        mesh.scale.multiplyScalar(4);
+        document.getElementById("powerUp").innerHTML = "";
+    }
+}
+function checkPowerUp(){
+    if(gotPowerUp){
+        var time = powerUpTimer.getElapsedTime();
+        if(time > 20){
+            disablePowerUp();
+            powerUpTimer = new THREE.Clock();
+        }
+        else if (time < 1){
+            document.getElementById("powerUp").style.fontSize = "128px";
+            document.getElementById("powerUp").style.right = "400px";
+            document.getElementById("powerUp").style.top = "100px";
+        }
+        else{
+            document.getElementById("powerUp").style.fontSize = "32px";
+            document.getElementById("powerUp").style.right = "0";
+            document.getElementById("powerUp").style.top = "0";
+        }
+
+        if(powerUpType == "quick") {
+            document.getElementById("powerUp").innerHTML = "Agility!";
+        }
+        else if (powerUpType == "shrink") {
+            document.getElementById("powerUp").innerHTML = "Tiny!";
+        }
+    }
+}
+function getPowerUp(position){
+    var powerUp = null;
+    var distFound = 3;
+
+    for(var i = 0; i < powerUpList.length; i++){
+        if (Math.abs(position.x - powerUpList[i].position.x) < 3 &&
+            Math.abs(position.y - powerUpList[i].position.y) < 3 &&
+            Math.abs(position.z - powerUpList[i].position.z) < 3 ) {
+
+            if (position.x - powerUpList[i].position.x < distFound) {
+                distFound = position.x - powerUpList[i].position.x;
+                powerUp = powerUpList[i];
+            }
+        }
+    }
+
+
+    return powerUp;
+}
