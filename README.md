@@ -1,92 +1,50 @@
-# [HTML5 Boilerplate](https://html5boilerplate.com)
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="src/js/vendor/modernizr-2.8.3.min.js"></script>
 
-[![Build Status](https://travis-ci.org/h5bp/html5-boilerplate.svg)](https://travis-ci.org/h5bp/html5-boilerplate)
-[![devDependency Status](https://david-dm.org/h5bp/html5-boilerplate/dev-status.svg)](https://david-dm.org/h5bp/html5-boilerplate#info=devDependencies)
-
-HTML5 Boilerplate is a professional front-end template for building
-fast, robust, and adaptable web apps or sites.
-
-This project is the product of many years of iterative development and
-combined community knowledge. It does not impose a specific development
-philosophy or framework, so you're free to architect your code in the
-way that you want.
-
-* Homepage: [https://html5boilerplate.com](https://html5boilerplate.com)
-* Source: [https://github.com/h5bp/html5-boilerplate](https://github.com/h5bp/html5-boilerplate)
-* Twitter: [@h5bp](https://twitter.com/h5bp)
-
-
-## Quick start
-
-Choose one of the following options:
-
-1. Download the latest stable release from
-   [html5boilerplate.com](https://html5boilerplate.com/) or create a
-   custom build using [Initializr](http://www.initializr.com).
-2. Clone the git repo — `git clone
-   https://github.com/h5bp/html5-boilerplate.git` - and checkout the
-   [tagged release](https://github.com/h5bp/html5-boilerplate/releases)
-   you'd like to use.
+        <title>CS430 Project</title>
+    </head>
+    <body>
+        <script src="src/js/jquery-2.1.4.min.js"></script>
+        <script src="src/js/plugins.js"></script>
+        <script src="src/js/main.js"></script>
 
 
-## Features
-
-* HTML5 ready. Use the new elements with confidence.
-* Designed with progressive enhancement in mind.
-* Includes:
-  * [`Normalize.css`](https://necolas.github.com/normalize.css/)
-    for CSS normalizations and common bug fixes
-  * [`jQuery`](https://jquery.com/) via CDN, with a local fallback
-  * A custom build of  [`Modernizr`](http://modernizr.com/) for feature
-    detection
-  * [`Apache Server Configs`](https://github.com/h5bp/server-configs-apache)
-    that, among other, improve the web site's performance and security
-* Placeholder CSS Media Queries.
-* Useful CSS helper classes.
-* Default print styles, performance optimized.
-* An optimized version of the Google Universal Analytics snippet.
-* Protection against any stray `console` statements causing JavaScript
-  errors in older browsers.
-* "Delete-key friendly." Easy to strip out parts you don't need.
-* Extensive inline and accompanying documentation.
-
-
-## Browser support
-
-* Chrome *(latest 2)*
-* Firefox *(latest 2)*
-* Internet Explorer 8+
-* Opera *(latest 2)*
-* Safari *(latest 2)*
-
-*This doesn't mean that HTML5 Boilerplate cannot be used in older browsers,
-just that we'll ensure compatibility with the ones mentioned above.*
-
-If you need legacy browser support (IE 6+, Firefox 3.6+, Safari 4+) you
-can use [HTML5 Boilerplate v4](https://github.com/h5bp/html5-boilerplate/tree/v4),
-but is no longer actively developed.
-
-
-## Documentation
-
-Take a look at the [documentation table of contents](dist/doc/TOC.md).
-This documentation is bundled with the project, which makes it readily
-available for offline reading and provides a useful starting point for
-any documentation you want to write about your project.
-
-
-## Contributing
-
-Hundreds of developers have helped make the HTML5 Boilerplate what it is
-today. Anyone and everyone is welcome to [contribute](CONTRIBUTING.md),
-however, if you decide to get involved, please take a moment to review
-the [guidelines](CONTRIBUTING.md):
-
-* [Bug reports](CONTRIBUTING.md#bugs)
-* [Feature requests](CONTRIBUTING.md#features)
-* [Pull requests](CONTRIBUTING.md#pull-requests)
-
-
-## License
-
-The code is available under the [MIT license](LICENSE.txt).
+        <ol>
+            <li><a href="src/Stage1/index.html">Stage 1</a></li>
+            <br/>
+            <li><a href="src/Stage2/index.html">Stage 2</a></li>
+            <br/>
+            <li><a href="src/Stage3/index.html">Stage 3</a></li>
+            <br/>
+            <li><a href="src/Project/index.html">Current</a></li>
+            <br/>
+        </ol>
+        <br/>
+        <h1>To Do:</h1>
+        <ul>
+            <li><span>Make cubes move in consistent direction</span></li>
+            <br/>
+            <li><span>Make cubes move in consistent direction</span></li>
+            <br/>
+            <li><span>Make universe</span></li>
+            <br/>
+            <li><span>Add start screen similar to end of game screen</span></li>
+            <br/>
+            <li><span>Highscore screen, store highscores with json file</span></li>
+            <br/>
+            <li><span>Lasers and shooting</span></li>
+            <br/>
+            <li><span>Enemies</span></li>
+            <br/>
+        </ul>
+    </body>
+</html>
