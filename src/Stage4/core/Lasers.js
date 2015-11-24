@@ -6,7 +6,7 @@ var laserShot = false;
 var shots = [];
 var asteroidExplodedShot = false;
 var asteroidListShot = [], asteroidListShot2 = [],asteroidListShot3 = [];
-var change13 = false, change14 = false;
+var schange3 = false, schange4 = false;
 
 function generateLasers(){
 
@@ -14,8 +14,8 @@ function generateLasers(){
         laserShot = true;
         var geometry = new THREE.CylinderGeometry( .02, .05, 1.5, 16 );
         var material = new THREE.MeshPhongMaterial({
-            color: yellow,
-            specular: red,
+            color: green,
+            specular: green,
             shininess: 100
         });
 
@@ -48,7 +48,6 @@ function shootLasers(){
     }
 
     if(laserShot){
-
         for(var i = 0; i < shots.length; i++){
             var originPoint = shots[i].position.clone();
 
@@ -64,7 +63,8 @@ function shootLasers(){
                 if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() && getAsteroid(shots[i].position) != null) {
                     var asteroidMesh = getAsteroidShot(shots[i].position);
                     explodeAsteroidShot(asteroidMesh);
-                    removePartnerLaser(shots[i].position);
+                    var incre = removePartnerLaser(shots[i].position, i);
+                    i = i - incre;
                     scene.remove(shots[i]);
                     scene.remove(asteroidMesh);
                     shots.splice(i,1);
@@ -73,10 +73,11 @@ function shootLasers(){
                 }
             }
 
-            if(shots[i].position.x > mesh.position.x + 100) {
-                scene.remove(shots[i]);
+            if(shots[i].position.x > mesh.position.x + 500) {
                 shots.splice(i, 1);
-                removePartnerLaser(shots[i].position);
+                scene.remove(shots[i]);
+                var incr = removePartnerLaser(shots[i].position, i);
+                i = i - 1 - incr;
             }
         }
     }
@@ -87,114 +88,114 @@ function shootLasers(){
         exp = (Math.random() * 5) + -5;
         asteroidListShot[j].position.x += speed;
 
-        if (change13 && change14){
-            if (change14){
+        if (schange3 && schange4){
+            if (schange4){
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot[j].position.y -= (j % exp)/mult;
                 asteroidListShot[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = false;
+            schange3 = false;
         }
-        else if (!change13 && !change14){
-            if (change14){
+        else if (!schange3 && !schange4){
+            if (schange4){
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change14 = true;
+            schange4 = true;
         }
-        else if (change13 && !change14){
-            if (change14){
+        else if (schange3 && !schange4){
+            if (schange4){
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = true;
+            schange3 = true;
         }
         else{
-            if (change14){
+            if (schange4){
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z += ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot[j].position.y += (j % exp)/mult;
                 asteroidListShot[j].position.z -= ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = true;
+            schange3 = true;
         }
     }
     for(var j = 0; j < asteroidListShot2.length; j++){
         exp = Math.floor((Math.random() * 3) + -3);
         asteroidListShot2[j].position.x += speed;
 
-        if (change13 && change14){
-            if (change14){
+        if (schange3 && schange4){
+            if (schange4){
                 asteroidListShot2[j].position.y += (j % exp)/mult;
                 asteroidListShot2[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot2[j].position.y -= (j % exp)/mult;
                 asteroidListShot2[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change14 = false;
+            schange4 = false;
         }
-        else if (!change13 && !change14){
-            if (change14){
+        else if (!schange3 && !schange4){
+            if (schange4){
                 asteroidListShot2[j].position.y += (j % exp)/mult;
                 asteroidListShot2[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 asteroidListShot2[j].position.y += (j % exp)/mult;
                 asteroidListShot2[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = true;
+            schange3 = true;
         }
-        else if (change13 && !change14){
+        else if (schange3 && !schange4){
             if (change4){
                 boxList2[j].position.y += (j % exp)/mult;
                 boxList2[j].position.z -= ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 boxList[j].position.y += (j % exp)/mult;
                 boxList[j].position.z += ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = true;
+            schange3 = true;
         }
         else{
-            if (change14){
+            if (schange4){
                 boxList[j].position.y += (j % exp)/mult;
                 boxList[j].position.z += ((j+1)% exp)/mult;
-                change14 = false;
+                schange4 = false;
             }
             else{
                 boxList[j].position.y += (j % exp)/mult;
                 boxList[j].position.z -= ((j+1)% exp)/mult;
-                change14 = true;
+                schange4 = true;
             }
-            change13 = true;
+            schange3 = true;
         }
     }
 
@@ -213,7 +214,7 @@ function shootLasers(){
         }
     }
 }
-function removePartnerLaser(position){
+function removePartnerLaser(position, index){
     var asteroid = null;
     var distFound = 5;
 
@@ -225,6 +226,12 @@ function removePartnerLaser(position){
             asteroid = shots[i];
             scene.remove(shots[i]);
             shots.splice(i,1);
+
+            if(index > i){
+                return 1;
+            }
+            else
+                return 0;
         }
     }
     return 0;
@@ -251,7 +258,6 @@ function explodeAsteroidShot(astExplode){
             scene.add(asteroidListShot2[p]);
         }
         asteroidExplodedShot = true;
-        createEnemy();
     }
 }
 function getAsteroidShot(position){
