@@ -12,7 +12,8 @@ var increment = 0;
 var value = 0;
 var engineFire = [], engineFire2 = [], engineFire3 = [], engineFire4 = [];
 var moveXSpeed = 0;
-var numShots = 20;
+var numShots = 100;
+var shipSpeed = .3;
 
 var lvlTime2 = 200;
 var lvlTime3 = 500;
@@ -20,10 +21,13 @@ var lvlTime4 = 900;
 var lvlTime5 = 1250;
 var lvlTime6 = 1600;
 var lvlTime7 = 2000;
+var lvlTime8 = 2500;
+var lvlTime9 = 3000;
+var lvlTime10 = 3700;
 
 //level management
 function level(level){
-    var dist, freq, numTimes, shipSpeed = .3;
+    var dist, freq, numTimes;
 
     if (level == 1){
         dist = 30;      //place distance away from plane
@@ -35,7 +39,7 @@ function level(level){
         dist = 30;
         freq = 2;
         numTimes = 1;
-        moveXSpeed = .4;
+        moveXSpeed = .3;
         shipSpeed = .6;
         changeAsteroidWidth(1.2);
     }
@@ -43,7 +47,7 @@ function level(level){
         dist = 40;
         freq = 2;
         numTimes = 2;
-        moveXSpeed = .6;
+        moveXSpeed = .45;
         shipSpeed = .8;
         changeAsteroidWidth(1.7);
     }
@@ -51,7 +55,7 @@ function level(level){
         dist = 45;
         freq = 2;
         numTimes = 2;
-        moveXSpeed = .75;
+        moveXSpeed = .6;
         shipSpeed = 1;
         changeAsteroidWidth(2.3);
     }
@@ -59,40 +63,62 @@ function level(level){
         dist = 50;
         freq = 2;
         numTimes = 3;
-        moveXSpeed = .9;
-        shipSpeed = 1.2;
+        moveXSpeed = .75;
+        shipSpeed = 1.1;
         changeAsteroidWidth(2.7);
     }
     else if (level == 6){
         dist = 50;
         freq = 1;
         numTimes = 3;
-        moveXSpeed = 1.1;
-        shipSpeed = 1.3;
-        changeAsteroidWidth(3.0);
-        moveAsteroid(3,1,1);
+        moveXSpeed = .9;
+        shipSpeed = 1.2;
+        changeAsteroidWidth(2.5);
     }
     else if (level == 7){
         dist = 50;
         freq = 1;
+        numTimes = 2;
+        moveXSpeed = .8;
+        shipSpeed = 1.2;
+        changeMoveSpeed(1.4);
+        changeAsteroidWidth(2.8);
+    }
+    else if (level == 8){
+        dist = 50;
+        freq = 1;
+        numTimes = 3;
+        moveXSpeed = 1;
+        shipSpeed = 1.1;
+        changeMoveSpeed(1.8);
+        changeAsteroidWidth(3.1);
+    }
+    else if (level == 9){
+        dist = 50;
+        freq = 1;
+        numTimes = 3;
+        moveXSpeed = 1.2;
+        shipSpeed = 1.15;
+        changeMoveSpeed(2.5);
+        changeAsteroidWidth(3.3);
+    }
+    else if (level == 10){
+        dist = 50;
+        freq = 1;
         numTimes = 3;
         moveXSpeed = 1.1;
-        shipSpeed = 1.3;
-        changeAsteroidWidth(3.3);
-        moveAsteroid(4,-1,-1);
+        shipSpeed = 1;
+        changeMoveSpeed(4);
+        changeAsteroidWidth(3.5);
     }
 
     camera.position.x += moveXSpeed;
 
-    //level 8-9 add lasers with finite amount
-    //can collect more ammo
-    //level 10 introduce bad guys, make asteroids smaller
-    //level 11 introduce more bad guys, asteroids bigger
-    //level 12 introduce boss
-    //level 13 madness
-
-
     generatePowerUp();
+
+    if(Math.floor(mesh.position.x) % 500 == 0 && mesh.position.x > 10){
+        createEnemy();
+    }
 
     if(level != -1) {
         generateAsteroid(dist, freq, numTimes);
@@ -122,6 +148,14 @@ function checkLevel(){
     }
     else if (time < lvlTime7+80 && time > lvlTime7)
         document.getElementById("level").innerHTML = "Level 7";
+    else if (time < lvlTime8+80 && time > lvlTime8)
+        document.getElementById("level").innerHTML = "Level 8";
+    else if (time < lvlTime9+80 && time > lvlTime9)
+        document.getElementById("level").innerHTML = "Level 9";
+    else if (time < lvlTime10+80 && time > lvlTime10) {
+        document.getElementById("level").innerHTML = "Level 10";
+        document.getElementById("caption").innerHTML = "MADNESS!!!";
+    }
     else {
         document.getElementById("level").innerHTML = "";
         document.getElementById("caption").innerHTML = "";
@@ -131,6 +165,12 @@ function checkLevel(){
     if(collision != null){
         if (collision)
             level = -1;
+        else if (time > lvlTime10)
+            level = 10;
+        else if (time > lvlTime9)
+            level = 9;
+        else if (time > lvlTime8)
+            level = 8;
         else if (time > lvlTime7)
             level = 7;
         else if (time > lvlTime6)
@@ -564,11 +604,12 @@ function animate() {
     rotateMesh();
     checkPowerUp();
     shootLasers();
+    moveEnemies();
+    moveAsteroids();
 
     if(checkLevel() != -1) {
         document.getElementById("score").innerHTML = Math.round(mesh.position.x).toString();
         document.getElementById("shots").innerHTML = numShots.toString();
-        document.getElementById("asteroids").innerHTML = meshCollisionList.length.toString() + "  " + moveAsteroidList.length.toString();
     }
     else
         document.getElementById("caption").innerHTML = "";

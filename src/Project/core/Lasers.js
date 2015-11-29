@@ -5,14 +5,17 @@
 var laserShot = false;
 var shots = [];
 var asteroidExplodedShot = false;
-var asteroidListShot = [], asteroidListShot2 = [],asteroidListShot3 = [];
+var explodedEnemy = false;
+var asteroidListShot = [], asteroidListShot2 = [];
+var boxListE = [], boxListE2 = [], boxListE3 = [];
 var change13 = false, change14 = false;
+var change11 = false, change12 = true;
 
 function generateLasers(){
 
     if(numShots > 0){
         laserShot = true;
-        var geometry = new THREE.CylinderGeometry( .02, .05, 1.5, 16 );
+        var geometry = new THREE.CylinderGeometry( .04, .1, 1.5, 16 );
         var material = new THREE.MeshPhongMaterial({
             color: yellow,
             specular: red,
@@ -44,7 +47,7 @@ function generateLasers(){
 }
 function shootLasers(){
     for(var i = 0; i < shots.length; i++) {
-        shots[i].position.x += moveXSpeed + .6;
+        shots[i].position.x += moveXSpeed + 2;
     }
 
     if(laserShot){
@@ -61,12 +64,31 @@ function shootLasers(){
                 var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
                 var collisionResults = ray.intersectObjects( meshCollisionList );
 
+                var rayEnemy = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+                var collisionResultsEnemy = rayEnemy.intersectObjects( enemies );
+
                 if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() && getAsteroid(shots[i].position) != null) {
                     var asteroidMesh = getAsteroidShot(shots[i].position);
-                    explodeAsteroidShot(asteroidMesh);
                     removePartnerLaser(shots[i].position);
                     scene.remove(shots[i]);
+                    explodeAsteroidShot(asteroidMesh);
                     scene.remove(asteroidMesh);
+                    shots.splice(i,1);
+                    laserShot = false;
+                    i = i - 1;
+                }
+
+                if(collisionResultsEnemy.length > 0 && collisionResultsEnemy[0].distance < directionVector.length() && getEnemyShot(shots[i].position) != null) {
+                    var enemy = getEnemyShot(shots[i].position);
+                    for(var z = 0; z < enemies.length; z++){
+                        if(enemy == enemies[z]){
+                            enemies.splice(z,1);
+                        }
+                    }
+                    removePartnerLaser(shots[i].position);
+                    scene.remove(shots[i]);
+                    explodeEnemy(enemy);
+                    scene.remove(getEnemyShot(enemy.position));
                     shots.splice(i,1);
                     laserShot = false;
                     i = i - 1;
@@ -81,7 +103,7 @@ function shootLasers(){
         }
     }
     var exp, speed = moveXSpeed/3;
-    var mult = 100;
+    var mult = 1000;
 
     for(var j = 0; j < asteroidListShot.length; j++){
         exp = (Math.random() * 5) + -5;
@@ -172,29 +194,200 @@ function shootLasers(){
         }
         else if (change13 && !change14){
             if (change4){
-                boxList2[j].position.y += (j % exp)/mult;
-                boxList2[j].position.z -= ((j+1)% exp)/mult;
+                asteroidListShot2[j].position.y += (j % exp)/mult;
+                asteroidListShot2[j].position.z -= ((j+1)% exp)/mult;
                 change14 = false;
             }
             else{
-                boxList[j].position.y += (j % exp)/mult;
-                boxList[j].position.z += ((j+1)% exp)/mult;
+                asteroidListShot2[j].position.y += (j % exp)/mult;
+                asteroidListShot2[j].position.z += ((j+1)% exp)/mult;
                 change14 = true;
             }
             change13 = true;
         }
         else{
             if (change14){
-                boxList[j].position.y += (j % exp)/mult;
-                boxList[j].position.z += ((j+1)% exp)/mult;
+                asteroidListShot2[j].position.y += (j % exp)/mult;
+                asteroidListShot2[j].position.z += ((j+1)% exp)/mult;
                 change14 = false;
             }
             else{
-                boxList[j].position.y += (j % exp)/mult;
-                boxList[j].position.z -= ((j+1)% exp)/mult;
+                asteroidListShot2[j].position.y += (j % exp)/mult;
+                asteroidListShot2[j].position.z -= ((j+1)% exp)/mult;
                 change14 = true;
             }
             change13 = true;
+        }
+    }
+    for(var j = 0; j < boxListE.length; j++){
+        exp = ((Math.random() * 9) + 9)/10000;
+        boxListE[j].position.x -= speed/10;
+
+        if (change11 && change12){
+            if (change12){
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE[j].position.y -= (j % exp)*mult;
+                boxListE[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= false;
+        }
+        else if (!change11 && !change12){
+            if (change12){
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else if (change11 && !change12){
+            if (change12){
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else{
+            if (change12){
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z += ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE[j].position.y += (j % exp)*mult;
+                boxListE[j].position.z -= ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+    }
+    for(var j = 0; j < boxListE2.length; j++){
+        exp = Math.floor((Math.random() * 6) + -6)/10000;
+        boxListE2[j].position.x += speed/10;
+
+        if (change11 && change12){
+            if (change12){
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE2[j].position.y -= (j % exp)*mult;
+                boxListE2[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= false;
+        }
+        else if (!change11 && !change12){
+            if (change12){
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else if (change11 && !change12){
+            if (change12){
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else{
+            if (change12){
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z += ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE2[j].position.y += (j % exp)*mult;
+                boxListE2[j].position.z -= ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+    }
+    for(var j = 0; j < boxListE3.length; j++){
+        exp = Math.floor((Math.random() * 3) + 3)/10000;
+        boxListE3[j].position.x -= speed/10;
+
+        if (change11 && change12){
+            if (change12){
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE3[j].position.y -= (j % exp)*mult;
+                boxListE3[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= false;
+        }
+        else if (!change11 && !change12){
+            if (change12){
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else if (change11 && !change12){
+            if (change12){
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z -= ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z += ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
+        }
+        else{
+            if (change12){
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z += ((j+1)% exp)*mult;
+                change12 = false;
+            }
+            else{
+                boxListE3[j].position.y += (j % exp)*mult;
+                boxListE3[j].position.z -= ((j+1)% exp)*mult;
+                change12 = true;
+            }
+            change11= true;
         }
     }
 
@@ -204,31 +397,44 @@ function shootLasers(){
             for(var i = 0; i < asteroidListShot.length; i++){
                 scene.remove(asteroidListShot[i]);
                 scene.remove(asteroidListShot2[i]);
-                scene.remove(asteroidListShot3[i]);
             }
             asteroidListShot = [];
             asteroidListShot2 = [];
-            asteroidListShot3 = [];
             asteroidExplodedShot = false;
+        }
+    }
+    if(boxListE.length > 0){
+        if (boxListE[0].position.x < mesh.position.x || boxListE[0].position.y - 2 > mesh.position.y )
+        {
+            for(var i = 0; i < boxListE.length; i++){
+                scene.remove(boxListE[i]);
+                scene.remove(boxListE2[i]);
+                scene.remove(boxListE3[i]);
+            }
+            boxListE = [];
+            boxListE2 = [];
+            boxListE3 = [];
+            explodedEnemy = false;
         }
     }
 }
 function removePartnerLaser(position){
-    var asteroid = null;
-    var distFound = 5;
-
-    for(var i = 0; i < shots.length; i++){
-        if (Math.abs(position.x - shots[i].position.x) < distFound &&
-            Math.abs(position.y - shots[i].position.y) < distFound &&
-            Math.abs(position.z - shots[i].position.z) < distFound ) {
-
-            asteroid = shots[i];
-            scene.remove(shots[i]);
-            shots.splice(i,1);
-        }
-    }
-    return 0;
+    //var asteroid = null;
+    //var distFound = 5;
+    //
+    //for(var i = 0; i < shots.length; i++){
+    //    if (Math.abs(position.x - shots[i].position.x) < distFound &&
+    //        Math.abs(position.y - shots[i].position.y) < distFound &&
+    //        Math.abs(position.z - shots[i].position.z) < distFound ) {
+    //
+    //        asteroid = shots[i];
+    //        scene.remove(shots[i]);
+    //        shots.splice(i,1);
+    //    }
+    //}
+    //return 0;
 }
+
 function explodeAsteroidShot(astExplode){
 
     var width = asteroidWidth/10;
@@ -253,6 +459,53 @@ function explodeAsteroidShot(astExplode){
         asteroidExplodedShot = true;
         createEnemy();
     }
+}
+function explodeEnemy(enemy){
+
+    if(!explodedEnemy) {
+        for (var i = 0; i < 100; i++) {
+            var box = new THREE.BoxGeometry(.1, .1, .1);
+            var mat = new THREE.MeshLambertMaterial( {color: generateColor()} );
+            var asteroid = new THREE.Mesh(box, mat);
+
+            asteroid.position.set(enemy.position.x +.2, enemy.position.y, enemy.position.z);
+            asteroid.rotateY(Math.random()*100);
+            asteroid.rotateZ(Math.random()*100);
+            scene.add(asteroid);
+            asteroid.updateMatrix();
+            asteroid.matrixAutoUpdate = true;
+            boxListE.push(asteroid);
+        }
+
+        explodedEnemy = true;
+        scene.remove(enemy);
+
+        for(var p = 0; p < boxListE.length; p++){
+            boxListE2[p] = boxListE[p].clone();
+            scene.add(boxListE2[p]);
+            boxListE3[p] = boxListE[p].clone();
+            scene.add(boxListE3[p]);
+        }
+    }
+}
+
+function getEnemyShot(position){
+    var enemy = null;
+    var distFound = 3;
+
+    for(var i = 0; i < enemies.length; i++){
+        if (Math.abs(position.x - enemies[i].position.x) < 3 &&
+            Math.abs(position.y - enemies[i].position.y) < 3 &&
+            Math.abs(position.z - enemies[i].position.z) < 3 ) {
+
+            if (position.x - enemies[i].position.x < distFound) {
+                distFound = position.x - enemies[i].position.x;
+                enemy = enemies[i];
+            }
+        }
+    }
+
+    return enemy;
 }
 function getAsteroidShot(position){
     var asteroid = null;

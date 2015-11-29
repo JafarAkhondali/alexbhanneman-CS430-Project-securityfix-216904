@@ -5,6 +5,7 @@
 var asteroidList = [], asteroidList2 = [], asteroidList3 = [];
 var moveAsteroidList= [];
 var asteroidWidth = 1.5;
+var astMoveSpeed = 1;
 var asteroidObj = ['obj/asteroid3.json', 'obj/asteroid4.json','obj/asteroid5.json','obj/asteroid6.json'];
 //var asteroidObjects = [];
 
@@ -43,13 +44,15 @@ function generateAsteroid(dist, freq, numTimes){
         var material = new THREE.MeshLambertMaterial( {color: 0x663300} );
         var ast = new THREE.CubeGeometry( asteroidWidth, asteroidWidth, asteroidWidth );
         var asteroid = new THREE.Mesh( ast, material);
+        asteroid.moveY = Math.random()*5 - 2.5;
+        asteroid.moveZ = Math.random()*5 - 2.5;
         placeAsteroid(asteroid,dist,numTimes);
     }
 }
 function placeAsteroid(asteroid, dist, numTimes){
 
-    var w = maxWidth * 2.5;
-    var l = maxHeight * 2.5;
+    var w = maxWidth * 2.5 * (shipSpeed);
+    var l = maxHeight * 2.5 * (shipSpeed + .7);
 
     for(var i = 0; i < numTimes; i++){
         var x = camera.position.x + dist;
@@ -81,18 +84,17 @@ function getAsteroid(position){
 
     return asteroid;
 }
-function moveAsteroid(speed, directionY, directionZ){
-
-    var mult = 4000;
-    var x = 100*speed;
-    var y = directionY/mult;
-    var z = directionZ/mult;
-
-    for(var j = 0; j < moveAsteroidList.length; j++){
-        moveAsteroidList[j].position.y += y*(j % x);
-        moveAsteroidList[j].position.z += z*(j % x);
-    }
-}
 function changeAsteroidWidth(width){
     asteroidWidth = width;
+}
+function moveAsteroids(){
+    if(checkLevel() > 5){
+        for(var i = 0; i < moveAsteroidList.length; i++){
+            moveAsteroidList[i].position.y += moveAsteroidList[i].moveY/100;
+            moveAsteroidList[i].position.z += moveAsteroidList[i].moveZ/100;
+        }
+    }
+}
+function changeMoveSpeed(speed){
+    astMoveSpeed = speed;
 }
