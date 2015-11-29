@@ -566,7 +566,7 @@ function animate() {
     shootLasers();
 
     if(checkLevel() != -1) {
-        document.getElementById("score").innerHTML = Math.round(mesh.position.x).toString();
+        document.getElementById("score").innerHTML = Math.round(mesh.position.x).toString() + "  Hi:" + getCookie("HighScore");
         document.getElementById("shots").innerHTML = numShots.toString();
         document.getElementById("asteroids").innerHTML = meshCollisionList.length.toString() + "  " + moveAsteroidList.length.toString();
     }
