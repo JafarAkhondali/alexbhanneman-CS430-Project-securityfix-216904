@@ -660,8 +660,12 @@ function detectCollision(){
                 moveXSpeed = 0;
                 collision = true;
                 explode();
+                if(Math.round(mesh.position.x).toString() > parseInt(getCookie("HighScore")))
+                {
+                    setCookie("HighScore",Math.round(mesh.position.x).toString(),365);
+                }
                 scene.remove(asteroidMesh);
-                document.getElementById("text").innerHTML = "Your score: " + Math.round(mesh.position.x).toString();
+                document.getElementById("text").innerHTML = "Your score: " + Math.round(mesh.position.x).toString() + "<br> Your high score: " + getCookie("HighScore");
                 document.getElementById("score").style.visibility = "hidden";
                 document.getElementById("level").style.visibility = "hidden";
                 document.getElementById("displayScore").style.visibility = "visible";
