@@ -14,16 +14,3 @@ function getCookie(cname) {
     }
     return "";
 }
-
-function isInt(value) {
-    return !isNaN(value) &&
-        parseInt(Number(value)) == value &&
-        !isNaN(parseInt(value, 10));
-}
-
-function resetHighScore()
-{
-    setCookie("HighScore","0",365);
-}
-
-
