@@ -25,6 +25,8 @@ var lvlTime8 = 2500;
 var lvlTime9 = 3000;
 var lvlTime10 = 3700;
 
+
+
 //level management
 function level(level){
     var dist, freq, numTimes;
@@ -640,6 +642,10 @@ function restart() {
     animate();
 }
 
-init();
-animate();
+function startGame()
+{
+    init();
+    animate();
+}
+startGame();
 

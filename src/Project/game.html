@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <title>Asteroid 430</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="project.css">
+</head>
+<body>
+
+<div id="container"></div>
+<div id="score"></div>
+<div id="displayScore"><span id="text"></span><button id="btn" type="submit" onclick="restart()">Restart</button> <button onclick="location.href='index.html';">Menu</button></div>
+<div id="level"></div>
+<div id="caption"></div>
+<div id="powerUp"></div>
+<div id="shots"></div>
+
+
+<script type="x-shader/x-vertex" id="vertexshader">
+		#ifdef GL_ES
+		precision highp float;
+		#endif
+
+		void main()
+		{
+			gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+		}
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentshader">
+		#ifdef GL_ES
+		precision highp float;
+		#endif
+
+		void main()
+		{
+			gl_FragColor 	= vec4(1.0,0.0,1.0,1.0);
+		}
+
+</script>
+
+
+<script type="text/javascript" src="../js/three.js-master/build/three.min.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/Detector.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/libs/stats.min.js"></script>
+<script type="text/javascript" src="../js/three.js-master/examples/js/loaders/OBJLoader.js"></script>
+<script type="text/javascript" src="../js/microcache.js"></script>
+
+<script type="text/javascript" src="core/Colors.js"></script>
+<script type="text/javascript" src="core/Universe.js"></script>
+<script type="text/javascript" src="core/Controls.js"></script>
+<script type="text/javascript" src="core/Main.js"></script>
+<script type="text/javascript" src="core/Asteroids.js"></script>
+<script type="text/javascript" src="core/PowerUps"></script>
+<script type="text/javascript" src="core/Enemy.js"></script>
+<script type="text/javascript" src="core/Lasers.js"></script>
+<script type="text/javascript" src="core/Enemy.js"></script>
+<script type="text/javascript" src="core/CollisionDetect.js"></script>
+<script type="text/javascript" src="core/HighScore.js"></script>
+</body>
+
+</html>
